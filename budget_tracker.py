@@ -5,6 +5,7 @@
 #4. Check remaining budget
 #Create function for each option
 #Create main function
+#Add remove expense function/option
 
 def set_budget():
     while True:
@@ -25,6 +26,8 @@ def add_expenses(exp_dict):
             break
         except ValueError:
             print("Invalid input. Please try again.")
+    if exp_dict is None:
+        exp_dict = {}
     if category in exp_dict:
         exp_dict[category] += amount
     else:
@@ -33,14 +36,48 @@ def add_expenses(exp_dict):
     return exp_dict
 
 def view_expenses(exp_dict):
-    print("Summary of expenses below:")
-    for category, amount in exp_dict.items():
-        print(f"{category} expenses: £{amount:.2f}")
-    total_expenses = sum(exp_dict.values())
-    print(f"\nTotal expenses: £{total_expenses:.2f}")
-    return total_expenses
+    if exp_dict is None:
+        print("You have no expenses!")
+    else:
+        print("Summary of expenses below:")
+        for category, amount in exp_dict.items():
+            print(f"{category} expenses: £{amount:.2f}")
+        total_expenses = sum(exp_dict.values())
+        print(f"\nTotal expenses: £{total_expenses:.2f}")
+        return total_expenses
+
+def remove_expenses(exp_dict):
+    return_to_menu_flag = False
+    while True:
+        if exp_dict == None:
+            print("You have no expenses!")
+        else:
+            try:
+                removed_expense = str(input("Please enter the expense category that you would like to remove: "))
+                removed_expense = exp_dict.pop(removed_expense)
+                print(f"{removed_expense} expense removed!")
+            except KeyError:
+                print("You have no expenses!")
+                while True:
+                    try:
+                        return_to_menu = int(input("You didn't enter a valid expense category. Enter '1' to try again, or enter '2' to return to the menu. "))
+                        if return_to_menu == 1:
+                            return_to_menu_flag = False
+                            break
+                        elif return_to_menu == 2:
+                            return_to_menu_flag = True
+                            break
+                    except ValueError:
+                        print("Please enter '1' or '2'.")
+                if return_to_menu_flag == True:
+                    break
+                else:
+                    continue
+        return exp_dict
 
 def check_remaining_budget(user_budget, total_expenses):
+    if total_expenses is None:
+        total_expenses = 0
     remaining_user_budget = user_budget - total_expenses
     print(f"Remaining budget: £{remaining_user_budget:.2f}")
     if remaining_user_budget < 0:
@@ -56,8 +93,9 @@ def main():
         print("\nOptions:")
         print("\n1. Add expenses")
         print("2. View expenses")
-        print("3. Check remaining budget")
-        print("4. Exit")
+        print("3. Remove expenses")
+        print("4. Check remaining budget")
+        print("5. Exit")
         while True:
             try:
                 user_choice = int(input("\nPlease choose an option: "))
@@ -69,10 +107,11 @@ def main():
             total_expenses = sum(expenses.values())
         elif user_choice == 2:
             total_expenses = view_expenses(expenses)
-            check_remaining_budget(user_budget, total_expenses)
         elif user_choice == 3:
-            check_remaining_budget(user_budget, total_expenses)
+            expenses = remove_expenses(expenses)
         elif user_choice == 4:
+            check_remaining_budget(user_budget, total_expenses)
+        elif user_choice == 5:
             break
         else:
             print("Please select a number from the list.")
