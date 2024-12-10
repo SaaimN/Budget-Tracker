@@ -49,15 +49,15 @@ def view_expenses(exp_dict):
 def remove_expenses(exp_dict):
     return_to_menu_flag = False
     while True:
-        if exp_dict == None:
+        if exp_dict is None:
             print("You have no expenses!")
         else:
             try:
-                removed_expense = str(input("Please enter the expense category that you would like to remove: "))
-                removed_expense = exp_dict.pop(removed_expense)
-                print(f"{removed_expense} expense removed!")
+                removed_expense_category = str(input("Please enter the expense category that you would like to remove: "))
+                removed_expense_amount = exp_dict.pop(removed_expense_category)
+                print(f"{removed_expense_category} expense removed!")
+                break
             except KeyError:
-                print("You have no expenses!")
                 while True:
                     try:
                         return_to_menu = int(input("You didn't enter a valid expense category. Enter '1' to try again, or enter '2' to return to the menu. "))
@@ -73,7 +73,7 @@ def remove_expenses(exp_dict):
                     break
                 else:
                     continue
-        return exp_dict
+    return exp_dict
 
 def check_remaining_budget(user_budget, total_expenses):
     if total_expenses is None:
